@@ -28,7 +28,7 @@ def generate_temp_csv(energyfn):
 def generate_gnuplot_energy_template():
     gpl = open('.energy.gpl', 'w')
     titles = ('{/Symbol S}E', '{/Symbol D}E', 'E_R', 'E_B')
-    filenames = ('sume.pdf', 'diffe.pdf', 'er.pdf', 'eb.pdf')
+    filenames = ('sume', 'diffe', 'er', 'eb')
     inputfiles = ('.sum.energy.dat', '.dif.energy.dat', '.enr.energy.dat', '.enb.energy.dat')
     colors = ('black', 'red', 'blue', 'green')
 
@@ -46,7 +46,7 @@ def generate_gnuplot_energy_template():
         '''
         # set title '{title}'
         set ylabel '{title}, meV'
-        set output '{filename}'
+        set output '{filename}.pdf'
         plot '{inputfile}' using 1:2 with lines lw 2 lc rgb '{color}
         '''.format(**{'title':titles[i], 'filename':filenames[i], 'inputfile':inputfiles[i], 'color':colors[i]}) )
     gpl.close()

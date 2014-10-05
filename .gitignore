@@ -10,3 +10,7 @@
 *.out
 *.gz
 *.tex
+*.png
+makefile
+suite/
+results.tar
