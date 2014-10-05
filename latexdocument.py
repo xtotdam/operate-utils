@@ -66,7 +66,7 @@ def parse_adatoms(adatomsfn):
     print 'Parsed adatoms information'
     return (str(adatoms_number), ''.join(adatoms_table), ''.join(coord_diff))
 
-def generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber):
+def generate_latex_document(notes, values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber):
     latex = open('report.tex', 'w')
     latex.write('''
     \documentclass[12pt]{article}
@@ -96,6 +96,11 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
     \parindent=0cm
     \\today\ \currenttime \hfill New-Illumine Report
     \hrule
+
+    \section{Description}
+
+    ''' + notes + '''
+
 
     \section{Last energy values}
     \\begin{tabular}{l|l|l|l|l}
@@ -275,4 +280,5 @@ if __name__ == '__main__':
     potentials = parse_potentials(rzfile)
     values = parse_last_values(lastvaluesfn, num=5)
     (adatoms_number, adatoms_table, coord_diff) = parse_adatoms(adatomsfn)
-    generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber)
+    notes = raw_input('Enter description/notes on this calculations: ')
+    generate_latex_document(notes, values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber)
