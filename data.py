@@ -1,57 +1,13 @@
 #! /usr/bin/python2
+from energyplot import generate_temp_csv, generate_gnuplot_energy_plot
 
-# energy.csv transformation
-#
-outsum = open('.sum.energy.dat', 'w')
-outdif = open('.dif.energy.dat', 'w')
-outenr = open('.enr.energy.dat', 'w')
-outenb = open('.enb.energy.dat', 'w')
+generate_temp_csv('energy.csv')
+generate_gnuplot_energy_plot()
+exit(0)
 
-num_lines = sum(1 for line in open('energy.csv'))
-offset = min(500, num_lines / 2)
-
-for i, line in enumerate(open('energy.csv')):
-    line = line.strip().split(',')
-    if i > offset:
-        outdif.write(str(i) + ',' + line[4] + '\n')
-    outsum.write(str(i) + ',' + line[0] + '\n')
-    outenr.write(str(i) + ',' + line[1] + '\n')
-    outenb.write(str(i) + ',' + line[2] + '\n')
-
-for p in (outsum, outdif, outenr, outenb):
-    p.close()
-
-# gnuplot templates
-#
-sumgr = open('.sum.gnuplot', 'w')
-difgr = open('.dif.gnuplot', 'w')
-enrgr = open('.enr.gnuplot', 'w')
-enbgr = open('.enb.gnuplot', 'w')
-xlabel = r'TD steps'
-titles = (r'{/Symbol S}E', r'{/Symbol D}E', r'E_R', r'E_B')
-filenames = ('sume.pdf', 'diffe.pdf', 'er.pdf', 'eb.pdf')
-inputfiles = ('.sum.energy.dat', '.dif.energy.dat', '.enr.energy.dat', '.enb.energy.dat')
-colors = ('black', 'red', 'blue', 'green')
-
-for i, p in enumerate((sumgr, difgr, enrgr, enbgr)):
-    p.write('''
-#! /usr/bin/gnuplot -persist
-set terminal pdf enhanced
-set encoding utf8
-set datafile separator ","
-set xlabel '{xlabel}'
-set grid
-unset key
-
-set title '{title}'
-set ylabel '{title}, meV'
-set output '{filename}'
-plot '{inputfile}' using 1:2 with lines lw 2 lc rgb "{color}"
-'''.format(xlabel=xlabel, title=titles[i], filename=filenames[i], inputfile=inputfiles[i], color=colors[i]))
-    p.close()
 
 # latex template
-
+#
 rzfile = open('cu001.rz')
 config = []
 for line in rzfile:
