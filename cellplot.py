@@ -9,21 +9,28 @@ def generate_temp_fin(finfilename):
 
     ad = []
     for line in open(finfilename):
-        parts = filter(None, line.strip().split(' '))
-        if len(parts) == 8:
-            if int(parts[6]):
-                adatoms.write(' '.join(parts) + '\n')
-                ad.append([float(x) for x in parts[0:3]])
-            elif int(parts[7]):
-                movingatoms.write(' '.join(parts) + '\n')
-            else:
-                stillatoms.write(' '.join(parts) + '\n')
+        if line.strip().startswith('#'):
+            finheader = line
+        else:
+            parts = filter(None, line.strip().split(' '))
+            if len(parts) == 3:
+                boundcond = ' & '.join(parts) + '\\\\\hline\n'
+            elif len(parts) == 1:
+                allatomsnumber = parts[0]
+            elif len(parts) == 8:
+                if int(parts[6]):
+                    adatoms.write(' '.join(parts) + '\n')
+                    ad.append([float(x) for x in parts[0:3]])
+                elif int(parts[7]):
+                    movingatoms.write(' '.join(parts) + '\n')
+                else:
+                    stillatoms.write(' '.join(parts) + '\n')
 
     stillatoms.close()
     movingatoms.close()
     adatoms.close()
     print 'Temp fin\'s generated'
-    return ad
+    return (ad, finheader, boundcond, allatomsnumber)
 
 def generate_gnuplot_fin_template(ad, offset = 0.2, dticks = 10.):
     limits = [[min(x) - offset, max(x) + offset] for x in [[x[i] for x in ad] for i in xrange(3)]]
@@ -87,5 +94,5 @@ if __name__ == '__main__':
         else:
             finfilename = raw_input('Input fin filename: ')
 
-    ad = generate_temp_fin(finfilename)
+    (ad, finheader, boundcond, allatomsnumber) = generate_temp_fin(finfilename)
     generate_gnuplot_fin_template(ad)

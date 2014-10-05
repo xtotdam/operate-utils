@@ -42,7 +42,7 @@ while True:
     else:
         adatomsfn = raw_input('Input adatoms coordinates and velocities filename: ')
 
-ad = generate_temp_fin(finfilename)
+(ad, finheader, boundcond, allatomsnumber) = generate_temp_fin(finfilename)
 generate_gnuplot_fin_template(ad)
 
 generate_temp_csv(energyfn)
@@ -51,5 +51,5 @@ generate_gnuplot_energy_template()
 (rzfile, config, header) = parse_config(rzfilename)
 potentials = parse_potentials(rzfile)
 values = parse_last_values(lastvaluesfn)
-(adatoms_number, adatoms_table) = parse_adatoms(adatomsfn)
-generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table)
+(adatoms_number, adatoms_table, coord_diff) = parse_adatoms(adatomsfn)
+generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber)

@@ -39,6 +39,7 @@ def generate_gnuplot_energy_template():
     set xlabel 'TD steps'
     set grid
     unset key
+    set xtics rotate by 270
     ''')
 
     for i in xrange(4):

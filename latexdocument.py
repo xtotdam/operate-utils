@@ -51,13 +51,22 @@ def parse_last_values(lastvaluesfn, num=3):
 def parse_adatoms(adatomsfn):
     adatoms_number = 0
     adatoms_table = []
+    coord_diff = []
+    prev = None
     for line in open(adatomsfn):
         adatoms_number += 1
         adatoms_table.append(str(adatoms_number) + ' & ' + ' & '.join(line.strip().split(' ')[:-2]) + '\\\\\n')
+        if prev:
+            l = line.strip().split(' ')[0:3]
+            p = prev.strip().split(' ')[0:3]
+            coord_diff.append('{}$\\rightarrow${} & {} & {} & {} \\\\\n'.format(
+                adatoms_number-1, adatoms_number,
+                float(l[0]) - float(p[0]), float(l[1]) - float(p[1]), float(l[2]) - float(p[2])))
+        prev = line
     print 'Parsed adatoms information'
-    return (str(adatoms_number), ''.join(adatoms_table))
+    return (str(adatoms_number), ''.join(adatoms_table), ''.join(coord_diff))
 
-def generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table):
+def generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber):
     latex = open('report.tex', 'w')
     latex.write('''
     \documentclass[12pt]{article}
@@ -90,16 +99,15 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
 
     \section{Last energy values}
     \\begin{tabular}{l|l|l|l|l}
-    $\Sigma$ E, meV (\\ref{fig:sume})& E$_R$, meV (\\ref{fig:er})& E$_B$, meV (\\ref{fig:eb})& E$_{LR}$, meV & $\Delta$E, meV (\\ref{fig:diffe})\\\\\hline
+    $\Sigma$ E, meV & E$_R$, meV & E$_B$, meV & E$_{LR}$, meV & $\Delta$E, meV \\\\\hline
     '''
     + values +
     '''\hline
     \end{tabular}
 
     \section{Overall information}
-    '''
-    + header.replace('#','') +
-    '''
+    Header : `` ''' + header.replace('#','') + '''''\\\\
+
     \\begin{tabular}{l|l}
     \hline Value & Description \\\\\hline
     '''
@@ -113,18 +121,39 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
     + potentials +
     '''
     \end{enumerate}
+    \clearpage
+
+    \section{Lattice information}
+    Header : `` ''' + finheader.replace('#','') + '''''\\\\
+    Number of atoms:\\ ''' + allatomsnumber + '''\\\\
+
+    \\begin{tabular}{l|l|l|l}
+    \hline ~ & x & y & z \\\\\hline
+    Boundary conditions & ''' + boundcond + '''
+    \end{tabular}\\\\
 
     \section{Adatoms information}
-    Adatoms number: '''
-    + adatoms_number +
-    '''
-    \n\n\\begin{tabular}{l|l|l|l|l|l|l}
+    Adatoms number: ''' + adatoms_number + '''\\\\
+
+    \\begin{tabular}{l|l|l|l|l|l|l}
     \hline N & x & y & z & V$_x$ & V$_y$ & V$_z$ \\\\\hline
     '''
     + adatoms_table +
     '''
     \hline
+    \end{tabular}\\\\
+
+    \subsection{Coordinate differences}
+
+    \\begin{tabular}{l|l|l|l}
+    \hline n$\\rightarrow$(n$-$1) & x$_n -$ x$_{n-1}$ & y$_n - $y$_{n-1}$ & z$_n - $z$_{n-1}$ \\\\\hline
+    '''
+    + coord_diff +
+    '''
+    \hline
     \end{tabular}
+    \clearpage
+
     \section{Energy graphs}
 
     \\addcontentsline{toc}{subsubsection}{Full energy}
@@ -212,6 +241,14 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
     print 'Latex document generated'
 
 if __name__ == '__main__':
+    from cellplot import generate_temp_fin
+    finfilename = 'cu001.fin'
+    while True:
+        if exists(finfilename) and access(finfilename, R_OK):
+            break
+        else:
+            finfilename = raw_input('Input fin filename: ')
+    (ad, finheader, boundcond, allatomsnumber) = generate_temp_fin(finfilename)
 
     rzfilename = 'cu001.rz'
     while True:
@@ -237,5 +274,5 @@ if __name__ == '__main__':
     (rzfile, config, header) = parse_config(rzfilename)
     potentials = parse_potentials(rzfile)
     values = parse_last_values(lastvaluesfn, num=5)
-    (adatoms_number, adatoms_table) = parse_adatoms(adatomsfn)
-    generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table)
+    (adatoms_number, adatoms_table, coord_diff) = parse_adatoms(adatomsfn)
+    generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber)
