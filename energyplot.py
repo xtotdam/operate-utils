@@ -3,31 +3,27 @@ from os.path import exists
 from os import access, R_OK
 
 def generate_temp_csv(energyfn):
-    if exists(energyfn) and access(energyfn, R_OK):
-        outsum = open('.sum.energy.dat', 'w')
-        outdif = open('.dif.energy.dat', 'w')
-        outenr = open('.enr.energy.dat', 'w')
-        outenb = open('.enb.energy.dat', 'w')
+    outsum = open('.sum.energy.dat', 'w')
+    outdif = open('.dif.energy.dat', 'w')
+    outenr = open('.enr.energy.dat', 'w')
+    outenb = open('.enb.energy.dat', 'w')
 
-        num_lines = sum(1 for line in open('energy.csv'))
-        offset = min(500, num_lines / 2)
+    num_lines = sum(1 for line in open('energy.csv'))
+    offset = min(500, num_lines / 2)
 
-        for i, line in enumerate(open('energy.csv')):
-            line = line.strip().split(',')
+    for i, line in enumerate(open('energy.csv')):
+        line = line.strip().split(',')
 
-            if i > offset:
-                outdif.write(str(i) + ' ' + line[4] + '\n')
+        if i > offset:
+            outdif.write(str(i) + ' ' + line[4] + '\n')
 
-            outsum.write(str(i) + ' ' + line[0] + '\n')
-            outenr.write(str(i) + ' ' + line[1] + '\n')
-            outenb.write(str(i) + ' ' + line[2] + '\n')
+        outsum.write(str(i) + ' ' + line[0] + '\n')
+        outenr.write(str(i) + ' ' + line[1] + '\n')
+        outenb.write(str(i) + ' ' + line[2] + '\n')
 
-        for p in (outsum, outdif, outenr, outenb):
-            p.close()
-        print 'Temp csv\'s generated'
-    else:
-        print 'File ' + energyfn + 'is inaccessible. Now exit'
-        exit(1)
+    for p in (outsum, outdif, outenr, outenb):
+        p.close()
+    print 'Temp csv\'s generated'
 
 def generate_gnuplot_energy_template():
     gpl = open('.energy.gpl', 'w')
@@ -40,7 +36,7 @@ def generate_gnuplot_energy_template():
 
     set terminal pdf enhanced
     set encoding utf8
-    set xlabel '{xlabel}'
+    set xlabel 'TD steps'
     set grid
     unset key
     ''')
@@ -48,7 +44,7 @@ def generate_gnuplot_energy_template():
     for i in xrange(4):
         gpl.write(
         '''
-        set title '{title}'
+        # set title '{title}'
         set ylabel '{title}, meV'
         set output '{filename}'
         plot '{inputfile}' using 1:2 with lines lw 2 lc rgb '{color}
@@ -57,6 +53,12 @@ def generate_gnuplot_energy_template():
     print 'Gnuplot energy template created'
 
 if __name__ == '__main__':
-    energyfn = raw_input('Input energy filename: ')
+    energyfn = 'energy.csv'
+    while True:
+        if exists(energyfn) and access(energyfn, R_OK):
+            break
+        else:
+            energyfn = raw_input('Input energy filename: ')
+
     generate_temp_csv(energyfn)
     generate_gnuplot_energy_template()

@@ -4,3 +4,9 @@
 *.pyc
 *.csv
 *.fin
+*.rz
+*.aux
+*.log
+*.out
+*.gz
+*.tex

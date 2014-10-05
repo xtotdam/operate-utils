@@ -1,143 +1,55 @@
 #! /usr/bin/python2
 
+from os.path import exists
+from os import access, R_OK
 from cellplot import generate_temp_fin, generate_gnuplot_fin_template
 from energyplot import generate_temp_csv, generate_gnuplot_energy_template
+from latexdocument import parse_config, parse_potentials, parse_last_values, parse_adatoms, generate_latex_document
 
-generate_temp_fin('cu001.fin')
-generate_gnuplot_fin_template()
+finfilename = 'cu001.fin'
+energyfn = 'energy.csv'
+rzfilename = 'cu001.rz'
+lastvaluesfn = '.lastvalues.csv'
+adatomsfn = '.adatoms.fin'
 
-generate_temp_csv('energy.csv')
+while True:
+    if exists(finfilename) and access(finfilename, R_OK):
+        break
+    else:
+        finfilename = raw_input('Input fin filename: ')
+
+while True:
+    if exists(energyfn) and access(energyfn, R_OK):
+        break
+    else:
+        energyfn = raw_input('Input energy filename: ')
+
+while True:
+    if exists(rzfilename) and access(rzfilename, R_OK):
+        break
+    else:
+        rzfilename = raw_input('Input rz filename: ')
+
+while True:
+    if exists(lastvaluesfn) and access(lastvaluesfn, R_OK):
+        break
+    else:
+        lastvaluesfn = raw_input('Input last values filename: ')
+
+while True:
+    if exists(adatomsfn) and access(adatomsfn, R_OK):
+        break
+    else:
+        adatomsfn = raw_input('Input adatoms coordinates and velocities filename: ')
+
+ad = generate_temp_fin(finfilename)
+generate_gnuplot_fin_template(ad)
+
+generate_temp_csv(energyfn)
 generate_gnuplot_energy_template()
-exit(0)
 
-
-# latex template
-#
-rzfile = open('cu001.rz')
-config = []
-for line in rzfile:
-    if line.strip().startswith('#'):
-        header = line
-    else:
-        if line.startswith('==='):
-            break
-        line = line.strip().split('     ')
-        config.append(line[0] + ' & ' + line[-1] + ' \\\\\n')
-config = ''.join(config).replace('_','-')
-
-potvalues, paramsdesc, potnames = [], [], []
-for i, line in enumerate(rzfile):
-    line = line.strip()
-    if not i%2:
-        line = line[:-1].split('[')
-        potnames.append(line[0])
-        l = line[1].split(',')
-        paramsdesc.append(''.join([x + ' & ' if x is not l[-1] else x for x in l])+' \\\\\n')
-    else:
-        l = line.split(' ')
-        potvalues.append(''.join([x + ' & ' if x is not l[-1] else x for x in l])+' \\\\\n')
-
-potentials = []
-for name, desc, val in zip(potnames, paramsdesc, potvalues):
-    state = 'l|'*(len(desc.split('&'))-1)+'l'
-    potentials.append('\item ' + name + '\n\n\\begin{tabular}{' + state + '}\n' + desc + '\hline ' + val + '\end{tabular}\n\n')
-potentials = ''.join(potentials)
-
-table = []
-for line in open('.lastlines.csv'):
-    l = line.strip().split(',')
-    table.append(''.join([x + ' & ' if x is not l[-1] else x for x in l])+' \\\\\n')
-values = ''.join(table[-4:-1])
-
-latex = open('report.tex', 'w')
-latex.write('''
-\documentclass[12pt]{article}
-\usepackage[T2A]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[russian,english]{babel}
-\usepackage[ddmmyyyy,hhmmss]{datetime}
-\usepackage{graphicx}
-\usepackage{geometry}
-\usepackage{hyperref}
-\usepackage[hypcap]{caption}
-
-\hypersetup{
-    colorlinks,
-    citecolor=black,
-    filecolor=black,
-    linkcolor=black,
-    urlcolor=black
-}
-
-\geometry{left=1.5cm}
-\geometry{right=1.5cm}
-\geometry{top=1.5cm}
-\geometry{bottom=1.5cm}
-
-\\begin{document}
-\parindent=0cm
-\\today\ \currenttime \hfill New-Illumine Report
-\hrule
-
-\section{Last energy values}
-\\begin{tabular}{l|l|l|l|l}
-$\Sigma$ E, meV (\\ref{fig:sume})& E$_R$, meV (\\ref{fig:er})& E$_B$, meV (\\ref{fig:eb})& E$_{LR}$, meV & $\Delta$E, meV (\\ref{fig:diffe})\\\\\hline
-'''
-+ values +
-'''\hline
-\end{tabular}
-
-\section{Overall information}
-'''
-+ header.replace('#','') +
-'''
-\\begin{tabular}{l|l}
-\hline Value & Description \\\\\hline
-'''
-+ config +
-'''\hline
-\end{tabular}
-
-\section{Potential parameters}
-\\begin{enumerate}
-'''
-+ potentials +
-'''
-\end{enumerate}
-\section{Energy graphs}
-\\begin{figure}[h]
-    \centering
-    \includegraphics[width=\\textwidth]{sume.pdf}
-    \caption{Full energy evolution \label{fig:sume}}
-\end{figure}
-
-\\begin{figure}[h]
-    \centering
-    \includegraphics[width=\\textwidth]{diffe.pdf}
-    \caption{Full energy difference evolution \label{fig:diffe}}
-\end{figure}
-
-\\begin{figure}[h]
-    \centering
-    \includegraphics[width=\\textwidth]{er.pdf}
-    \caption{Repulsive energy evolution \label{fig:er}}
-\end{figure}
-
-\\begin{figure}[h]
-    \centering
-    \includegraphics[width=\\textwidth]{eb.pdf}
-    \caption{Binding energy evolution \label{fig:eb}}
-\end{figure}
-\\vfill
-\clearpage
-\section{Cell images}
-
-To be added soon
-\\begin{figure}[h]
-    \centering
-    \includegraphics[width=\\textwidth]{sume.pdf}
-    \caption{Dummy picture \label{fig:sume}}
-\end{figure}
-\end{document}
-''')
-latex.close()
+(rzfile, config, header) = parse_config(rzfilename)
+potentials = parse_potentials(rzfile)
+values = parse_last_values(lastvaluesfn)
+(adatoms_number, adatoms_table) = parse_adatoms(adatomsfn)
+generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table)
