@@ -39,12 +39,12 @@ def parse_potentials(rzfile):
     print 'Parsed potentias'
     return potentials
 
-def parse_last_values(lastvaluesfn):
+def parse_last_values(lastvaluesfn, num=3):
     table = []
     for line in open(lastvaluesfn):
         l = line.strip().split(',')
         table.append(' & '.join(l) + ' \\\\\n')
-    values = ''.join(table[-4:-1])
+    values = ''.join(table[-1-num:-1])
     print 'Parsed last values'
     return values
 
@@ -236,6 +236,6 @@ if __name__ == '__main__':
 
     (rzfile, config, header) = parse_config(rzfilename)
     potentials = parse_potentials(rzfile)
-    values = parse_last_values(lastvaluesfn)
+    values = parse_last_values(lastvaluesfn, num=5)
     (adatoms_number, adatoms_table) = parse_adatoms(adatomsfn)
     generate_latex_document(values, header, config, potentials, adatoms_number, adatoms_table)
