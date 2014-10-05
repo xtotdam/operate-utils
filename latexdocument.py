@@ -130,28 +130,28 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
     \\addcontentsline{toc}{subsubsection}{Full energy}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{sume.pdf}
+        \includegraphics[width=\\textwidth]{sume.png}
         \caption{Full energy evolution \label{fig:sume}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Energy difference}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{diffe.pdf}
+        \includegraphics[width=\\textwidth]{diffe.png}
         \caption{Full energy difference evolution \label{fig:diffe}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Repulsion energy}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{er.pdf}
+        \includegraphics[width=\\textwidth]{er.png}
         \caption{Repulsion energy evolution \label{fig:er}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Binding energy}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{eb.pdf}
+        \includegraphics[width=\\textwidth]{eb.png}
         \caption{Binding energy evolution \label{fig:eb}}
     \end{figure}
 
@@ -164,21 +164,21 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
     \\addcontentsline{toc}{subsubsection}{Cell XY}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{YX.pdf}
+        \includegraphics[width=\\textwidth]{YX.png}
         \caption{Cell in XY projection \label{fig:cell:xy}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Cell XZ}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{XZ.pdf}
+        \includegraphics[width=\\textwidth]{XZ.png}
         \caption{Cell in XZ projection \label{fig:cell:xz}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Cell YZ}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{YZ.pdf}
+        \includegraphics[width=\\textwidth]{YZ.png}
         \caption{Cell in YZ projection \label{fig:cell:yz}}
     \end{figure}
 
@@ -188,21 +188,21 @@ def generate_latex_document(values, header, config, potentials, adatoms_number, 
     \\addcontentsline{toc}{subsubsection}{Adatoms XY}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{XYa.pdf}
+        \includegraphics[width=\\textwidth]{XYa.png}
         \caption{Cell in XY projection (adatoms) \label{fig:adatoms:xy}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Adatoms XZ}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{XZa.pdf}
+        \includegraphics[width=\\textwidth]{XZa.png}
         \caption{Cell in XZ projection (adatoms) \label{fig:adatoms:xz}}
     \end{figure}
 
     \\addcontentsline{toc}{subsubsection}{Adatoms YZ}
     \\begin{figure}[h]
         \centering
-        \includegraphics[width=\\textwidth]{YZa.pdf}
+        \includegraphics[width=\\textwidth]{YZa.png}
         \caption{Cell in YZ projection (adatoms) \label{fig:adatoms:yz}}
     \end{figure}
 

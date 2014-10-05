@@ -35,8 +35,8 @@ def generate_gnuplot_fin_template(ad, offset = 0.2, dticks = 10.):
 
     gpl.write('''#! /usr/bin/gnuplot -persist
 
-    set terminal pdf enhanced
-    set encoding utf8
+    set terminal png
+    set encoding default
     set grid
     set view equal xy
     unset key
@@ -50,10 +50,10 @@ def generate_gnuplot_fin_template(ad, offset = 0.2, dticks = 10.):
         set ylabel '{axj}, A'
         set xtics 2 rotate by 270
         set ytics 2
-        set output '{axi}{axj}.pdf'
-        plot '.still.fin'   using {i}:{j} with points ls 7 ps 0.5 lc rgb "red", \\
-             '.moving.fin'  using {i}:{j} with points ls 7 ps 0.5 lc rgb "black", \\
-             '.adatoms.fin' using {i}:{j} with points ls 7 ps 0.5 lc rgb "blue"
+        set output '{axi}{axj}.png'
+        plot '.still.fin'   using {i}:{j} with points ls 7 ps 1 lc rgb "red", \\
+             '.moving.fin'  using {i}:{j} with points ls 7 ps 1 lc rgb "black", \\
+             '.adatoms.fin' using {i}:{j} with points ls 7 ps 1 lc rgb "blue"
         '''.format(**{'i':i+1, 'j':j+1, 'axi':axis[i], 'axj':axis[j]}) )
 
     pairs = ((0, 1), (0, 2), (1, 2))
@@ -67,10 +67,10 @@ def generate_gnuplot_fin_template(ad, offset = 0.2, dticks = 10.):
         set ytics {diffj}
         set xrange [{limli}:{limri}]
         set yrange [{limlj}:{limrj}]
-        set output '{axi}{axj}a.pdf'
-        plot '.still.fin'   using {i}:{j} with points ls 7 ps 0.5 lc rgb "red", \\
-             '.moving.fin'  using {i}:{j} with points ls 7 ps 0.5 lc rgb "black", \\
-             '.adatoms.fin' using {i}:{j} with points ls 7 ps 0.5 lc rgb "blue"
+        set output '{axi}{axj}a.png'
+        plot '.still.fin'   using {i}:{j} with points ls 7 ps 1 lc rgb "red", \\
+             '.moving.fin'  using {i}:{j} with points ls 7 ps 1 lc rgb "black", \\
+             '.adatoms.fin' using {i}:{j} with points ls 7 ps 1 lc rgb "blue"
         '''.format(**{'i':i+1, 'j':j+1, 'axi':axis[i], 'axj':axis[j],
                       'limli':limits[i][0], 'limri':limits[i][1],
                       'limlj':limits[j][0], 'limrj':limits[j][1],
