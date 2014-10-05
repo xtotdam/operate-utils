@@ -1,8 +1,13 @@
 #! /usr/bin/python2
-from energyplot import generate_temp_csv, generate_gnuplot_energy_plot
+
+from cellplot import generate_temp_fin, generate_gnuplot_fin_template
+from energyplot import generate_temp_csv, generate_gnuplot_energy_template
+
+generate_temp_fin('cu001.fin')
+generate_gnuplot_fin_template()
 
 generate_temp_csv('energy.csv')
-generate_gnuplot_energy_plot()
+generate_gnuplot_energy_template()
 exit(0)
 
 
