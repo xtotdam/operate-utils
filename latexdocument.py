@@ -59,7 +59,7 @@ def parse_adatoms(adatomsfn):
         if prev:
             l = line.strip().split(' ')[0:3]
             p = prev.strip().split(' ')[0:3]
-            coord_diff.append('{}$\\rightarrow${} & {} & {} & {} \\\\\n'.format(
+            coord_diff.append('{}\\rightarrow{} & {:+.6f} & {:+.6f} & {:+.6f} \\\\\n'.format(
                 adatoms_number-1, adatoms_number,
                 float(l[0]) - float(p[0]), float(l[1]) - float(p[1]), float(l[2]) - float(p[2])))
         prev = line
@@ -77,6 +77,7 @@ def generate_latex_document(notes, values, header, config, potentials, adatoms_n
     \usepackage{graphicx}
     \usepackage{geometry}
     \usepackage{hyperref}
+    \usepackage{array}
     \usepackage[hypcap]{caption}
 
     \hypersetup{
@@ -140,7 +141,7 @@ def generate_latex_document(notes, values, header, config, potentials, adatoms_n
     \section{Adatoms information}
     Adatoms number: ''' + adatoms_number + '''\\\\
 
-    \\begin{tabular}{l|l|l|l|l|l|l}
+    \\begin{tabular}{l||l|l|l||l|l|l}
     \hline N & x & y & z & V$_x$ & V$_y$ & V$_z$ \\\\\hline
     '''
     + adatoms_table +
@@ -150,8 +151,8 @@ def generate_latex_document(notes, values, header, config, potentials, adatoms_n
 
     \subsection{Coordinate differences}
 
-    \\begin{tabular}{l|l|l|l}
-    \hline n$\\rightarrow$(n$-$1) & x$_n -$ x$_{n-1}$ & y$_n - $y$_{n-1}$ & z$_n - $z$_{n-1}$ \\\\\hline
+    \\begin{tabular}{>{$}l<{$}|>{$}l<{$}|>{$}l<{$}|>{$}l<{$}}
+    \hline n\\rightarrow(n-1) & x_n - x_{n-1} & y_n - y_{n-1} & z_n - z_{n-1} \\\\\hline
     '''
     + coord_diff +
     '''
