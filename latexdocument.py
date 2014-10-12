@@ -22,6 +22,8 @@ def parse_potentials(rzfile):
     potvalues, paramsdesc, potnames = [], [], []
     for i, line in enumerate(rzfile):
         line = line.strip()
+        if line.startswith('VERSION'):
+            version = line.strip().split(' ')[-1]
         if not i%2:
             line = line[:-1].split('[')
             potnames.append(line[0])
@@ -37,7 +39,7 @@ def parse_potentials(rzfile):
         potentials.append('\item ' + name + '\n\n\\begin{tabular}{' + state + '}\n' + desc + '\hline ' + val + '\end{tabular}\n\n')
     potentials = ''.join(potentials)
     print 'Parsed potentias'
-    return potentials
+    return (potentials, version)
 
 def parse_last_values(lastvaluesfn, num=3):
     table = []
@@ -66,7 +68,7 @@ def parse_adatoms(adatomsfn):
     print 'Parsed adatoms information'
     return (str(adatoms_number), ''.join(adatoms_table), ''.join(coord_diff))
 
-def generate_latex_document(notes, values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber):
+def generate_latex_document(version, notes, values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber):
     latex = open('report.tex', 'w')
     latex.write('''
     \documentclass[12pt]{article}
@@ -100,8 +102,10 @@ def generate_latex_document(notes, values, header, config, potentials, adatoms_n
 
     \section{Description}
 
-    ''' + notes + '''
+    Version: \\texttt{''' + version + '''}
 
+
+    ''' + notes + '''
 
     \section{Last energy values}
     \\begin{tabular}{l|l|l|l|l}
@@ -248,38 +252,33 @@ def generate_latex_document(notes, values, header, config, potentials, adatoms_n
 
 if __name__ == '__main__':
     from cellplot import generate_temp_fin
+
     finfilename = 'cu001.fin'
-    while True:
-        if exists(finfilename) and access(finfilename, R_OK):
-            break
-        else:
-            finfilename = raw_input('Input fin filename: ')
-    (ad, finheader, boundcond, allatomsnumber) = generate_temp_fin(finfilename)
-
     rzfilename = 'cu001.rz'
-    while True:
-        if exists(rzfilename) and access(rzfilename, R_OK):
-            break
-        else:
-            rzfilename = raw_input('Input rz filename: ')
-
     lastvaluesfn = '.lastvalues.csv'
-    while True:
-        if exists(lastvaluesfn) and access(lastvaluesfn, R_OK):
-            break
-        else:
-            lastvaluesfn = raw_input('Input last values filename: ')
-
     adatomsfn = '.adatoms.fin'
+
     while True:
-        if exists(adatomsfn) and access(adatomsfn, R_OK):
-            break
-        else:
-            adatomsfn = raw_input('Input adatoms coordinates and velocities filename: ')
+        if exists(finfilename) and access(finfilename, R_OK): break
+        else: finfilename = raw_input('Input fin filename: ')
+
+    while True:
+        if exists(rzfilename) and access(rzfilename, R_OK): break
+        else: rzfilename = raw_input('Input rz filename: ')
+
+    while True:
+        if exists(lastvaluesfn) and access(lastvaluesfn, R_OK): break
+        else: lastvaluesfn = raw_input('Input last values filename: ')
+
+    while True:
+        if exists(adatomsfn) and access(adatomsfn, R_OK): break
+        else: adatomsfn = raw_input('Input adatoms coordinates and velocities filename: ')
+
+    (ad, finheader, boundcond, allatomsnumber) = generate_temp_fin(finfilename)
 
     (rzfile, config, header) = parse_config(rzfilename)
     potentials = parse_potentials(rzfile)
     values = parse_last_values(lastvaluesfn, num=5)
     (adatoms_number, adatoms_table, coord_diff) = parse_adatoms(adatomsfn)
     notes = raw_input('Enter description/notes on this calculations: ')
-    generate_latex_document(notes, values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber)
+    generate_latex_document(version, notes, values, header, config, potentials, adatoms_number, adatoms_table, coord_diff, finheader, boundcond, allatomsnumber)

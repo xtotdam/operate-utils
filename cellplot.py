@@ -89,10 +89,8 @@ def generate_gnuplot_fin_template(ad, offset = 0.2, dticks = 10.):
 if __name__ == '__main__':
     finfilename = 'cu001.fin'
     while True:
-        if exists(finfilename) and access(finfilename, R_OK):
-            break
-        else:
-            finfilename = raw_input('Input fin filename: ')
+        if exists(finfilename) and access(finfilename, R_OK): break
+        else: finfilename = raw_input('Input fin filename: ')
 
     (ad, finheader, boundcond, allatomsnumber) = generate_temp_fin(finfilename)
     generate_gnuplot_fin_template(ad)

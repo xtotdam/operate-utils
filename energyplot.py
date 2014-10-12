@@ -8,10 +8,10 @@ def generate_temp_csv(energyfn):
     outenr = open('.enr.energy.dat', 'w')
     outenb = open('.enb.energy.dat', 'w')
 
-    num_lines = sum(1 for line in open('energy.csv'))
+    num_lines = sum(1 for line in open(energyfn))
     offset = min(500, num_lines / 2)
 
-    for i, line in enumerate(open('energy.csv')):
+    for i, line in enumerate(open(energyfn)):
         line = line.strip().split(',')
 
         if i > offset:
@@ -56,10 +56,8 @@ def generate_gnuplot_energy_template():
 if __name__ == '__main__':
     energyfn = 'energy.csv'
     while True:
-        if exists(energyfn) and access(energyfn, R_OK):
-            break
-        else:
-            energyfn = raw_input('Input energy filename: ')
+        if exists(energyfn) and access(energyfn, R_OK): break
+        else: energyfn = raw_input('Input energy filename: ')
 
     generate_temp_csv(energyfn)
     generate_gnuplot_energy_template()
