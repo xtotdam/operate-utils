@@ -17,3 +17,5 @@ results.tar
 *.zip
 *.exe
 *.lnk
+*.mcrd
+new/
