@@ -205,7 +205,10 @@ def generate_lattice_plots_templates(finfn, prefixes, offset=0.2, dticks=10, col
     for p in (stillatoms, movingatoms, adatoms): p.close()
     print 'Temp fin\'s generated'
 
-    limits = [[min(x) - offset, max(x) + offset] for x in [[x[i] for x in ad] for i in xrange(3)]]
+    if len(ad):
+        limits = [[min(x) - offset, max(x) + offset] for x in [[x[i] for x in ad] for i in xrange(3)]]
+    else:
+        limits = [[0, 0], [0, 0], [0, 0]]
     diff = [(x[1] - x[0]) / float(dticks) for x in limits]
 
     gpl = open('.cell.gpl', 'w')
@@ -260,6 +263,7 @@ def generate_latex_document(machreadinfo, notes, values, adatoms_number, adatoms
     \usepackage[hypcap]{caption}\n
     \hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black}\n
     \geometry{left=1.5cm}\n\geometry{right=1.5cm}\n\geometry{top=1.5cm}\n\geometry{bottom=1.5cm}\n
+    \\newcommand{\includegraphicsmaybe}[1]{\IfFileExists{#1}{\includegraphics[width=\\textwidth]{#1}}{\includegraphics{dummy.jpg}}}
     \\begin{document}\n\parindent=0cm\n''' +
     machreadinfo['date'] + '\\ /\\ ' + machreadinfo['self'] + ''' \hfill New-Illumine Report\n\hrule\n
     \section{Description}\n\nVersion: \\texttt{''' +
@@ -324,7 +328,7 @@ def generate_latex_document(machreadinfo, notes, values, adatoms_number, adatoms
     for title, prefix, caption in zip(titles, enprefixes, captions):
         latex.write(
             '\n\\addcontentsline{toc}{subsubsection}{' +
-            title + '}\n\\begin{figure}[h]\n\centering\n\includegraphics[width=\\textwidth]{' +
+            title + '}\n\\begin{figure}[h]\n\centering\n\includegraphicsmaybe{' +
             prefix + '.pdf}\n\caption{' + caption + '}\n\end{figure}\n')
 
     latex.write('\\vfill\n\clearpage\n\n\section{Cell images}\n\subsection{Cell}')
@@ -332,7 +336,7 @@ def generate_latex_document(machreadinfo, notes, values, adatoms_number, adatoms
     for proj in ('YX', 'XZ', 'YZ'):
         latex.write(
         '\n\\addcontentsline{toc}{subsubsection}{Cell ' +
-        proj + '}\n\\begin{figure}[h]\n\centering\n\includegraphics[width=\\textwidth]{' +
+        proj + '}\n\\begin{figure}[h]\n\centering\n\includegraphicsmaybe{' +
         proj + '.pdf}\n\caption{Cell in ' + proj + ' projection \label{fig:cell:' + proj.lower() + '}}\n\end{figure}\n')
 
     latex.write('\\vfill\n\clearpage\n\n\subsection{Adatoms}\n\n')
@@ -340,7 +344,7 @@ def generate_latex_document(machreadinfo, notes, values, adatoms_number, adatoms
     for proj in ('XY', 'XZ', 'YZ'):
         latex.write(
         '\n\\addcontentsline{toc}{subsubsection}{Adatoms ' +
-        proj + '}\n\\begin{figure}[h]\n\centering\n\includegraphics[width=\\textwidth]{' +
+        proj + '}\n\\begin{figure}[h]\n\centering\n\includegraphicsmaybe{' +
         proj + 'a.pdf}\n\caption{Cell in ' + proj + ' projection (adatoms) \label{fig:adatoms:' +
         proj.lower() + '}}\n\end{figure}\n')
 
