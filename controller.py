@@ -51,9 +51,9 @@ s = open('compile.sh', 'w')
 s.write('gnuplot .cell.gpl\ngnuplot .energy.gpl\npdflatex report.tex\npdflatex report.tex')
 s.close()
 files = ['.' + prefix + '.energy.dat' for prefix in enprefixes] + ['.' + prefix + '.fin' for prefix in finprefixes] + \
-        ['.cell.gpl', '.energy.gpl', 'report.tex', 'compile.cmd']
+        ['.cell.gpl', '.energy.gpl', 'report.tex', 'compile.cmd', 'compile.sh']
 system('tar -cf non-compiled.tar ' + ' '.join(files))
-for f in files:
+for f in files + ['.lastvalues.csv']:
     remove(f)
 # else:
 #     system('gnuplot .cell.gpl')
