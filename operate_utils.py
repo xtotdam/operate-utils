@@ -149,7 +149,7 @@ def generate_energy_plots_templates(energyfn, prefixes, offset=500, colors=('bla
     for i, line in enumerate(open(energyfn)):
         line = line.strip().split(',')
 
-        if i > offset: outdif.write(str(i) + ' ' + line[4] + '\n')
+        if i >= offset: outdif.write(str(i) + ' ' + line[4] + '\n')
         outsum.write(str(i) + ' ' + line[0] + '\n')
         outenr.write(str(i) + ' ' + line[1] + '\n')
         outenb.write(str(i) + ' ' + line[2] + '\n')
@@ -263,7 +263,7 @@ def generate_latex_document(machreadinfo, notes, values, adatoms_number, adatoms
     \usepackage[hypcap]{caption}\n
     \hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black}\n
     \geometry{left=1.5cm}\n\geometry{right=1.5cm}\n\geometry{top=1.5cm}\n\geometry{bottom=1.5cm}\n
-    \\newcommand{\includegraphicsmaybe}[1]{\IfFileExists{#1}{\includegraphics[width=\\textwidth]{#1}}{\includegraphics{dummy.jpg}}}
+    \\newcommand{\includegraphicsmaybe}[1]{\IfFileExists{#1}{\includegraphics[width=\\textwidth]{#1}}{\includegraphics[width=\\textwidth]{dummy.pdf}}}
     \\begin{document}\n\parindent=0cm\n''' +
     machreadinfo['date'] + '\\ /\\ ' + machreadinfo['self'] + ''' \hfill New-Illumine Report\n\hrule\n
     \section{Description}\n\nVersion: \\texttt{''' +

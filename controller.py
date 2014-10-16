@@ -43,7 +43,6 @@ values = plv(lastvaluesfn)
 notes = raw_input('Enter description/notes on this calculations: ')
 gld(machreadinfo, notes, values, adatoms_number, adatoms_table, coord_diff, enprefixes)
 
-# if '-a' in argv:
 s = open('compile.cmd', 'w')
 s.write('gnuplot .cell.gpl\ngnuplot .energy.gpl\npdflatex report.tex\npdflatex report.tex')
 s.close()
@@ -52,25 +51,6 @@ s.write('gnuplot .cell.gpl\ngnuplot .energy.gpl\npdflatex report.tex\npdflatex r
 s.close()
 files = ['.' + prefix + '.energy.dat' for prefix in enprefixes] + ['.' + prefix + '.fin' for prefix in finprefixes] + \
         ['.cell.gpl', '.energy.gpl', 'report.tex', 'compile.cmd', 'compile.sh']
-system('tar -cf non-compiled.tar ' + ' '.join(files))
+system('tar -cf non-compiled.tar ' + ' '.join(files + ['dummy.pdf']))
 for f in files + ['.lastvalues.csv']:
     remove(f)
-# else:
-#     system('gnuplot .cell.gpl')
-#     system('gnuplot .energy.gpl')
-#     system('pdflatex report.tex')
-#     system('pdflatex report.tex')
-#     files = ['.' + prefix + '.energy.dat' for prefix in enprefixes] + ['.' + prefix + '.fin' for prefix in finprefixes] + \
-#             ['.cell.gpl', '.energy.gpl', '.lastvalues.csv', 'report.*']
-#     needed = [prefix + '.pdf' for prefix in enprefixes] + [p + '.pdf' for p in ['YX', 'XZ', 'YZ']] + \
-#              [p + 'a.pdf' for p in ['XY', 'XZ', 'YZ']] + \
-#              ['report.tex', 'report.pdf', machreadinfo['energycsv'], machreadinfo['latticefin'],
-#              machreadinfo['prefresults'], machreadinfo['self']]
-#     system('tar -cf results.tar ' + ' '.join(needed))
-#     rename('report.pdf', '_report_.pdf')
-#     for f in files + needed:
-#         try:
-#             remove(f)
-#         except OSError:
-#             print f, ' rejected to be removed!'
-#     rename('_report_.pdf', 'report.pdf')

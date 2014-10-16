@@ -19,3 +19,4 @@ results.tar
 *.lnk
 *.mcrd
 new/
+!dummy.pdf
